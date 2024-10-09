@@ -11,10 +11,9 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 	
 	private BufferedImage back; 
 	private int key, x, y;
-	private ArrayList <Character> charList;
 	private GameStates state = GameStates.START;
 	private long deltaTime;
-
+	private String selectedCharacter;
 
 
 
@@ -24,11 +23,10 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 		this.addKeyListener(this);
 		this.addMouseListener(this);
 		this.addMouseMotionListener(this);
+		selectedCharacter = "";
 		key =-1; 
 		x=0;
 		y=0;
-		charList = setCharList();
-		
 	
 	}
 
@@ -43,12 +41,6 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 				long currentTime = System.nanoTime();
 				deltaTime = currentTime - lastTime;
 				lastTime = currentTime;
-
-				// Convert deltaTime to seconds for more readable measurement
-				double deltaTimeInSeconds = deltaTime / 1e9;
-
-				// Output deltaTimeInSeconds to see the time elapsed between each frame
-				System.out.println("Delta time: " + deltaTimeInSeconds + " seconds");
 
 				repaint();
 			}
@@ -71,36 +63,75 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 
 		Graphics g2d = back.createGraphics();
 		g2d.clearRect(0,0,getSize().width, getSize().height);
+		g2d.setFont(getFont().deriveFont(30.0f));
+		g2d.setColor(Color.WHITE);
 		// CODE BELOW
 
-		switch(state) {
-			case GameStates.START:
-
-			case GameStates.PLAY:
-			case GameStates.PAUSE:
-			case GameStates.END:
-			default:
-		}
+		gameLogic(g2d);
 
 
-
-		
 		// CODE ABOVE
 		twoDgraph.drawImage(back, null, 0, 0);
 
 	}
 
-	public ArrayList<Character> setCharList() {
+	public void gameLogic(Graphics g2d) {
+		switch(state) {
+			case GameStates.START:
+				g2d.drawString("Click on your desired character:", 700, 100);
+				int xOffset = 140; // Starting x position for the first character
+				int yOffset = 350; // y position for all characters
+				int spacing = 400; // Space between each character portrait
+			
+				// List of character classes
+				Class<?>[] characterClasses = {Crusader.class, Ranger.class, Mage.class, Monk.class};
+			
+				for (int i = 0; i < characterClasses.length; i++) {
+					try {
+						BufferedImage portrait = (BufferedImage) characterClasses[i].getMethod("getPortrait").invoke(null);
+						g2d.drawImage(portrait, xOffset + i * spacing, yOffset, null);
+						g2d.drawString(characterClasses[i].getSimpleName(), xOffset + 100 + i * spacing, yOffset + 400);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+				break;
+			case GameStates.SELECTED:
+				g2d.drawString("You selected " + selectedCharacter, 700, 100);
+				BufferedImage selectedPortrait;
+				try {
+						switch(selectedCharacter) {
 
-		ArrayList<Character> tempList = new ArrayList<>();
-		tempList.add(new Mage());
-		tempList.add(new Crusader());
-		tempList.add(new Thief());
-		tempList.add(new Monk());
-		return tempList;
+							case "Crusader":
+								selectedPortrait = (BufferedImage) Crusader.getPortrait();
+								g2d.drawImage(selectedPortrait, 700, 200, null);
+								break;
+							case "Ranger":
+								selectedPortrait = (BufferedImage) Ranger.getPortrait();
+								g2d.drawImage(selectedPortrait, 700, 200, null);
+								break;
+							case "Mage":
+								selectedPortrait = (BufferedImage) Mage.getPortrait();
+								g2d.drawImage(selectedPortrait, 700, 200, null);
+								break;
+							case "Monk":
+								selectedPortrait = (BufferedImage) Monk.getPortrait();
+								g2d.drawImage(selectedPortrait, 700, 200, null);
+								break;
+						}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				break;
+			case GameStates.PLAY:
+				break;
+			case GameStates.PAUSE:
+				break;
+			case GameStates.END:
+				break;
+			default:
+		}
 	}
-
-
 
 	//DO NOT DELETE
 	@Override
@@ -155,12 +186,42 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 
 
 	@Override
-	public void mouseClicked(MouseEvent arg0) {
-		// TODO Auto-generated method stub
+	public void mouseClicked(MouseEvent e) {
+		if (state == GameStates.START) {
+			selectedCharacter = selectCharacter(e);
+			if (!selectedCharacter.equals("")) {
+				state = GameStates.SELECTED;
+			}
+		}
 		
 	}
 
+	public String selectCharacter(MouseEvent e) {
+		int x = e.getX();
+		int y = e.getY();
+		int xOffset = 140; // Starting x position for the first character
+		int yOffset = 350;
+		int spacing = 400;
+		int portraitWidth = 315;
+		int portraitHeight = 315; 
 
+		Class<?>[] characterClasses = {Crusader.class, Ranger.class, Mage.class, Monk.class};
+
+		for (int i = 0; i < characterClasses.length; i++) {
+			int xStart = xOffset + i * spacing;
+			int xEnd = xStart + portraitWidth;
+			int yStart = yOffset;
+			int yEnd = yStart + portraitHeight;
+
+			if (x >= xStart && x <= xEnd && y >= yStart && y <= yEnd) {
+				System.out.println(characterClasses[i].getSimpleName());
+				return characterClasses[i].getSimpleName();
+			}
+		
+
+		}
+		return "";
+	}
 
 	@Override
 	public void mouseEntered(MouseEvent arg0) {

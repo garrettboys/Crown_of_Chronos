@@ -4,5 +4,6 @@ public enum GameStates {
     PLAY,
     START,
     PAUSE,
-    END
+    END,
+    SELECTED
 }

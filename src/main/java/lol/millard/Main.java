@@ -14,10 +14,10 @@ public class Main extends JFrame{
 		Game play = new Game();
 		((Component) play).setFocusable(true);
 		
-		Color RoyalBlue = new Color(22,13,193);
+		Color freakyBlue = new Color(65,48,146);
 		
 		
-		setBackground(RoyalBlue);
+		setBackground(freakyBlue);
 		
 		
 		getContentPane().add(play);

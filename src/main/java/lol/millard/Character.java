@@ -7,7 +7,6 @@ public class Character {
 
     protected int x, y, dx, dy, width, height, health, damage;
     protected ImageIcon sprite;
-    protected ImageIcon portrait;
 
     public Character() {
         x = 0;
@@ -19,7 +18,6 @@ public class Character {
         health = 0;
         damage = 0;
         sprite = null;
-        portrait = null;
     }
 
     public String toString() {
@@ -98,9 +96,6 @@ public class Character {
         this.sprite = sprite;
     }
 
-    public ImageIcon getPortrait() {
-        return this.portrait;
-    }
 }
 
 

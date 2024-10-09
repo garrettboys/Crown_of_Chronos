@@ -7,23 +7,23 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
-public class Crusader extends Character {
-
+public class Ranger extends Character {
     private static BufferedImage portrait;
 
     static {
         try {
-            portrait = ImageIO.read(new File("src/main/resources/portraits/Crusader.jpeg"));
+            portrait = ImageIO.read(new File("src/main/resources/portraits/Ranger.jpeg"));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public Crusader() {
+    public Ranger() {
         super();
     }
 
     public static BufferedImage getPortrait() {
         return portrait;
     }
+
 }
