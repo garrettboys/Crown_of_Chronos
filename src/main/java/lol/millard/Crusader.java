@@ -13,7 +13,7 @@ public class Crusader extends Character {
 
     static {
         try {
-            portrait = ImageIO.read(new File("src/main/resources/portraits/Crusader.jpeg"));
+            portrait = ImageIO.read(new File("src/main/resources/menu/portraits/Crusader.jpeg"));
         } catch (IOException e) {
             e.printStackTrace();
         }

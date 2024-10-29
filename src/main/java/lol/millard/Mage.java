@@ -14,7 +14,7 @@ public class Mage extends Character {
 
     static {
         try {
-            portrait = ImageIO.read(new File("src/main/resources/portraits/Mage.jpeg"));
+            portrait = ImageIO.read(new File("src/main/resources/menu/portraits/Mage.jpeg"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -22,6 +22,7 @@ public class Mage extends Character {
 
     public Mage() {
         super();
+        health = 10;
     }
 
     public static BufferedImage getPortrait() {

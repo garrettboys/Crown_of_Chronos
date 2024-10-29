@@ -12,7 +12,7 @@ public class Ranger extends Character {
 
     static {
         try {
-            portrait = ImageIO.read(new File("src/main/resources/portraits/Ranger.jpeg"));
+            portrait = ImageIO.read(new File("src/main/resources/menu/portraits/Ranger.jpeg"));
         } catch (IOException e) {
             e.printStackTrace();
         }

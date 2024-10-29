@@ -5,12 +5,12 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class Main extends JFrame{
-	private static final int WIDTH =1800;
-	private static final int HEIGHT=1600;
+	public static int WIDTH = Toolkit.getDefaultToolkit().getScreenSize().width;
+	public static int HEIGHT= Toolkit.getDefaultToolkit().getScreenSize().height;
 	
 	public Main () {
 		super("KeyListener Demo");
-		setSize(WIDTH, HEIGHT);
+		setSize(Toolkit.getDefaultToolkit().getScreenSize().width, Toolkit.getDefaultToolkit().getScreenSize().height);
 		Game play = new Game();
 		((Component) play).setFocusable(true);
 		

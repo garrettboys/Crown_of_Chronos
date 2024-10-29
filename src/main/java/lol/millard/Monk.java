@@ -13,7 +13,7 @@ public class Monk extends Character {
 
     static {
         try {
-            portrait = ImageIO.read(new File("src/main/resources/portraits/Monk.jpeg"));
+            portrait = ImageIO.read(new File("src/main/resources/menu/portraits/Monk.jpeg"));
         } catch (IOException e) {
             e.printStackTrace();
         }
