@@ -5,5 +5,6 @@ public enum GameStates {
     START,
     PAUSE,
     END,
+    WIN,
     SELECTED
 }

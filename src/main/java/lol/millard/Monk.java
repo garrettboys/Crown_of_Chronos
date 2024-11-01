@@ -7,7 +7,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
-public class Monk extends Character {
+public class Monk extends Player {
 
     private static BufferedImage portrait;
 
@@ -19,8 +19,8 @@ public class Monk extends Character {
         }
     }
 
-    public Monk() {
-        super();
+    public Monk(int x, int y) {
+        super(x, y);
     }
 
     public static BufferedImage getPortrait() {

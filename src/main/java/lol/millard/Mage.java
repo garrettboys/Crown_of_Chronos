@@ -7,7 +7,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
-public class Mage extends Character {
+public class Mage extends Player {
 
 
     private static BufferedImage portrait;
@@ -20,9 +20,8 @@ public class Mage extends Character {
         }
     }
 
-    public Mage() {
-        super();
-        health = 10;
+    public Mage(int x, int y) {
+        super(x, y);
     }
 
     public static BufferedImage getPortrait() {

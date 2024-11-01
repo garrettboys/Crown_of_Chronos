@@ -7,7 +7,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
-public class Ranger extends Character {
+public class Ranger extends Player {
     private static BufferedImage portrait;
 
     static {
@@ -18,8 +18,8 @@ public class Ranger extends Character {
         }
     }
 
-    public Ranger() {
-        super();
+    public Ranger(int x, int y) {
+        super(x, y);
     }
 
     public static BufferedImage getPortrait() {

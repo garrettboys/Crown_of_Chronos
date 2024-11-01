@@ -11,7 +11,7 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 	
 	private BufferedImage back; 
 	private int key, x, y;
-	private GameStates state = GameStates.START;
+	public GameStates state = GameStates.START;
 	private long deltaTime;
 	private String selectedCharacter;
 	private ImageIcon menuBackground;
