@@ -1,0 +1,98 @@
+{ "frames": {
+   "Werebear #Attack01 0.aseprite": {
+    "frame": { "x": 0, "y": 0, "w": 100, "h": 100 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 100, "h": 100 },
+    "sourceSize": { "w": 100, "h": 100 },
+    "duration": 100
+   },
+   "Werebear #Attack01 1.aseprite": {
+    "frame": { "x": 100, "y": 0, "w": 100, "h": 100 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 100, "h": 100 },
+    "sourceSize": { "w": 100, "h": 100 },
+    "duration": 100
+   },
+   "Werebear #Attack01 2.aseprite": {
+    "frame": { "x": 200, "y": 0, "w": 100, "h": 100 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 100, "h": 100 },
+    "sourceSize": { "w": 100, "h": 100 },
+    "duration": 100
+   },
+   "Werebear #Attack01 3.aseprite": {
+    "frame": { "x": 300, "y": 0, "w": 100, "h": 100 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 100, "h": 100 },
+    "sourceSize": { "w": 100, "h": 100 },
+    "duration": 100
+   },
+   "Werebear #Attack01 4.aseprite": {
+    "frame": { "x": 400, "y": 0, "w": 100, "h": 100 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 100, "h": 100 },
+    "sourceSize": { "w": 100, "h": 100 },
+    "duration": 100
+   },
+   "Werebear #Attack01 5.aseprite": {
+    "frame": { "x": 500, "y": 0, "w": 100, "h": 100 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 100, "h": 100 },
+    "sourceSize": { "w": 100, "h": 100 },
+    "duration": 100
+   },
+   "Werebear #Attack01 6.aseprite": {
+    "frame": { "x": 600, "y": 0, "w": 100, "h": 100 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 100, "h": 100 },
+    "sourceSize": { "w": 100, "h": 100 },
+    "duration": 100
+   },
+   "Werebear #Attack01 7.aseprite": {
+    "frame": { "x": 700, "y": 0, "w": 100, "h": 100 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 100, "h": 100 },
+    "sourceSize": { "w": 100, "h": 100 },
+    "duration": 100
+   },
+   "Werebear #Attack01 8.aseprite": {
+    "frame": { "x": 800, "y": 0, "w": 100, "h": 100 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 100, "h": 100 },
+    "sourceSize": { "w": 100, "h": 100 },
+    "duration": 100
+   }
+ },
+ "meta": {
+  "app": "https://www.aseprite.org/",
+  "version": "1.3.9.2-x64",
+  "format": "RGBA8888",
+  "size": { "w": 900, "h": 100 },
+  "scale": "1",
+  "frameTags": [
+   { "name": "Idle", "from": 0, "to": 5, "direction": "forward", "color": "#000000ff" },
+   { "name": "Walk", "from": 6, "to": 13, "direction": "forward", "color": "#000000ff" },
+   { "name": "Attack01", "from": 14, "to": 22, "direction": "forward", "color": "#000000ff" },
+   { "name": "Attack02", "from": 23, "to": 35, "direction": "forward", "color": "#000000ff" },
+   { "name": "Attack03", "from": 36, "to": 44, "direction": "forward", "color": "#000000ff" },
+   { "name": "Hurt", "from": 45, "to": 48, "direction": "forward", "color": "#000000ff" },
+   { "name": "Death", "from": 49, "to": 52, "direction": "forward", "color": "#000000ff" }
+  ],
+  "layers": [
+   { "name": "shadow", "opacity": 255, "blendMode": "normal" },
+   { "name": "main", "opacity": 255, "blendMode": "normal" },
+   { "name": "effect", "opacity": 255, "blendMode": "normal" }
+  ],
+  "slices": [
+  ]
+ }
+}
