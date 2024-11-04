@@ -5,16 +5,20 @@ import java.awt.*;
 import java.awt.image.BufferedImage; 
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 
 public class Game  extends JPanel implements Runnable, KeyListener, MouseListener, MouseMotionListener{
 	
 	private BufferedImage back; 
 	private int key, x, y;
-	public GameStates state = GameStates.START;
+	public static GameStates state = GameStates.START;
 	private long deltaTime;
 	private String selectedCharacter;
 	private ImageIcon menuBackground;
+	private Player player;
+	private boolean isAttacking;
+	private HashSet<Integer> pressedKeys;
 
 
 
@@ -26,6 +30,9 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 		this.addMouseMotionListener(this);
 		menuBackground = new ImageIcon("src/main/resources/menu_bg.jpeg");
 		selectedCharacter = "";
+		player = new Player(400, 400);
+		pressedKeys = new HashSet<Integer>();
+		isAttacking = false;
 		key =-1; 
 		x=0;
 		y=0;
@@ -178,8 +185,16 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 			
 				g2d.drawImage(selectedGif.getImage(), 1000, 400, null);
 
+				g2d.setFont(boldFont);
+				g2d.drawString("Press Space to Start", 640, 1000);
+				g2d.setFont(originalFont);
+
+
 				break;
 			case GameStates.PLAY:
+				player.update(deltaTime);
+				g2d.drawImage(player.getCurrentSprite(), player.getX(), player.getY(), null);
+
 				break;
 			case GameStates.PAUSE:
 				break;
@@ -187,71 +202,6 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 				break;
 			default:
 		}
-	}
-
-	//DO NOT DELETE
-	@Override
-	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-
-
-//DO NOT DELETE
-	@Override
-	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
-		key= e.getKeyCode();
-		if (key == KeyEvent.VK_ESCAPE && state == GameStates.SELECTED) {
-			state = GameStates.START;
-		}
-		
-		
-		
-	
-	}
-
-
-	//DO NOT DELETE
-	@Override
-	public void keyReleased(KeyEvent e) {
-		
-		
-		
-		
-	}
-
-
-
-	@Override
-	public void mouseDragged(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-
-	@Override
-	public void mouseMoved(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		x=arg0.getX();
-		y=arg0.getY();
-	}
-
-
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		if (state == GameStates.START) {
-			selectedCharacter = selectCharacter(e);
-			if (!selectedCharacter.equals("")) {
-				state = GameStates.SELECTED;
-			}
-		}
-		
 	}
 
 	public String selectCharacter(MouseEvent e) {
@@ -280,6 +230,143 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 		}
 		return "";
 	}
+
+	//DO NOT DELETE
+	@Override
+	public void keyTyped(KeyEvent e) {
+		
+	}
+
+
+
+
+//DO NOT DELETE
+	@Override
+	public void keyPressed(KeyEvent e) {
+		
+		key= e.getKeyCode();
+
+	    pressedKeys.add(e.getKeyCode());
+
+		if (key == KeyEvent.VK_ESCAPE && state == GameStates.SELECTED) {
+			state = GameStates.START;
+		}
+
+		if (key == KeyEvent.VK_SPACE && state == GameStates.SELECTED) {
+			state = GameStates.PLAY;
+		}
+		
+		
+		
+	
+	}
+
+
+	//DO NOT DELETE
+	@Override
+	public void keyReleased(KeyEvent e) {
+		pressedKeys.remove(e.getKeyCode());
+		
+		
+		
+	}
+
+
+
+	@Override
+	public void mouseDragged(MouseEvent arg0) {
+	}
+
+
+
+	@Override
+	public void mouseMoved(MouseEvent arg0) {
+		x=arg0.getX();
+		y=arg0.getY();
+	}
+
+
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		if (state == GameStates.START) {
+			selectedCharacter = selectCharacter(e);
+			if (!selectedCharacter.equals("")) {
+				state = GameStates.SELECTED;
+			}
+		}
+		
+	}
+
+	private void updatePlayerState() {
+	    // if currently attacking, ignore all other input until the attack is complete
+	    if (isAttacking) return;
+
+	    boolean hasHorizontalInput = pressedKeys.contains(KeyEvent.VK_A) || pressedKeys.contains(KeyEvent.VK_D);
+	    boolean hasVerticalInput = pressedKeys.contains(KeyEvent.VK_W) || pressedKeys.contains(KeyEvent.VK_S);
+
+	    // reset movement velocities
+	    player.setDx(0);
+	    player.setDy(0);
+
+		if (pressedKeys.contains(KeyEvent.VK_A)) 
+			player.setDx(-player.getSpeed());
+		
+
+		if (pressedKeys.contains(KeyEvent.VK_D)) 
+			player.setDx(player.getSpeed());
+
+		if (pressedKeys.contains(KeyEvent.VK_W))
+			player.setDy(-player.getSpeed());
+		
+		if (pressedKeys.contains(KeyEvent.VK_S))
+			player.setDy(player.getSpeed());
+
+	    // if (pressedKeys.contains(KeyEvent.VK_A)) {
+	    //     player.setState(Player.States.RUN_LEFT);
+	    //     player.setDx(-player.getSpeed());
+	    //     player.setLastDirectionMoved(Player.Directions.WEST);
+	        
+	    // } else if (pressedKeys.contains(KeyEvent.VK_D)) {
+	    //     player.setState(Player.States.RUN_RIGHT);
+	    //     player.setDx(player.getSpeed());
+	    //     player.setLastDirectionMoved(Player.Directions.EAST);
+	    // }
+
+	    // if (pressedKeys.contains(KeyEvent.VK_W)) {
+	    //     player.setDy(-player.getSpeed());
+	    //     player.setLastDirectionMoved(Player.Directions.NORTH);
+	        
+	    // } else if (pressedKeys.contains(KeyEvent.VK_S)) {
+	    //     player.setDy(player.getSpeed());
+	    //     player.setLastDirectionMoved(Player.Directions.SOUTH);
+	    // }
+	    
+	    // if (!hasHorizontalInput && hasVerticalInput) {
+	    //     player.setState(player.getLastDirectionMoved() == Player.Directions.WEST ? Player.States.RUN_LEFT : Player.States.RUN_RIGHT);
+	    // }
+
+	    // if (pressedKeys.contains(KeyEvent.VK_F) && canAttack()) {
+	    //     player.setState(player.getAttackDirection());
+		// 	player.attackCheck(boss);
+	    //     isAttacking = true;
+	    // }
+
+	    // // reset to appropriate idle state based on last direction moved if no movement keys are pressed
+	    // if (!hasHorizontalInput && !hasVerticalInput && !isAttacking) {
+	    //     if (player.getLastDirectionMoved() == Player.Directions.WEST) {
+	    //         player.setState(Player.States.IDLE_LEFT);
+	    //     } else {
+	    //         player.setState(Player.States.IDLE_RIGHT);
+	    //     }
+	    // }
+	    
+	}
+
+	private boolean canAttack() {
+	    return !player.getPlayerState().name().startsWith("ATK");
+	}
+
 
 	@Override
 	public void mouseEntered(MouseEvent arg0) {

@@ -1,11 +1,10 @@
-package pixel_souls;
+package lol.millard;
 
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Vector;
 
 import javax.imageio.ImageIO;
 
@@ -19,7 +18,7 @@ public class Player  {
 	private int health;
 	private int moveCooldownMs;
 	private int speed;
-	private States state;
+	private States playerState;
 	private Directions lastDirectionMoved = Directions.EAST;
 	private int attackRange;
 	private Rectangle hitbox;
@@ -78,7 +77,7 @@ public class Player  {
 		this.height = 32;
 		this.health = 100;
 		this.moveCooldownMs = 75;
-		this.setState(States.IDLE_RIGHT);
+		this.setPlayerState(States.IDLE_RIGHT);
 		this.setSpeed(90);
 		this.idleRightFrameCount = 1;
 		this.idleLeftFrameCount = 1;
@@ -110,7 +109,7 @@ public class Player  {
 		this.height = height;
 		this.health = 100;
 		this.moveCooldownMs = 75;
-		this.setState(States.IDLE_RIGHT);
+		this.setPlayerState(States.IDLE_RIGHT);
 		this.setSpeed(100);
 		this.idleRightFrameCount = 1;
 		this.idleLeftFrameCount = 1;
@@ -134,48 +133,74 @@ public class Player  {
 
 	public void setSprites() { // instantiate a map of sprites for each state, standard naming for sprites
 		try { 
-			// BufferedImage[] idleRight = new BufferedImage[7];
-			// for (int i = 1; i <= 7; i++) {
-			// 	idleRight[i-1] = ImageUtils.resizeImage(ImageIO.read(new File("assets/player_sprites/idle"+i+".png")), 96, 96);
-			// }
+			BufferedImage[] idleRight = new BufferedImage[6];
+			for (int i = 1; i <= 6; i++) {
+				String filePath = "src/main/resources/game/werebear/idle/" + i + ".png";
+				System.out.println("Loading image: " + filePath);
+				File file = new File(filePath);
+				if (file.exists()) {
+					idleRight[i-1] = ImageIO.read(file);
+					if (idleRight[i-1] != null) {
+						System.out.println("Successfully loaded image: " + filePath);
+					} else {
+						System.err.println("Failed to load image: " + filePath);
+					}
+				} else {
+					System.err.println("File does not exist: " + filePath);
+				}
+				//idleRight[i-1] = ImageUtils.resizeImage(ImageIO.read(new File(filePath)), 96, 96);
+			}
 			
 			// BufferedImage[] idleLeft = new BufferedImage[7];
 			// for (int i = 1; i <= 7; i++) {
-			// 	idleLeft[i - 1] = ImageUtils.flipImageHorizontally(ImageUtils
-			// 			.resizeImage(ImageIO.read(new File("assets/player_sprites/idle" + i + ".png")), 96, 96));
+			//     idleLeft[i - 1] = ImageUtils.flipImageHorizontally(ImageUtils
+			//             .resizeImage(ImageIO.read(new File("assets/player_sprites/idle" + i + ".png")), 96, 96));
 			// }
 			
 			// BufferedImage[] runRight = new BufferedImage[6];
 			// for (int i = 1; i <= 6; i++)
-			// 	runRight[i-1] = ImageUtils.resizeImage(ImageIO.read(new File("assets/player_sprites/run"+i+".png")), 96, 96);
+			//     runRight[i-1] = ImageUtils.resizeImage(ImageIO.read(new File("assets/player_sprites/run"+i+".png")), 96, 96);
 			
 			// BufferedImage[] runLeft = new BufferedImage[6];
 			// for (int i = 1; i <= 6; i++)
-			// 	runLeft[i - 1] = ImageUtils.flipImageHorizontally(ImageUtils.resizeImage(ImageIO.read
-			// 			(new File("assets/player_sprites/run"+i+".png")), 96, 96));
+			//     runLeft[i - 1] = ImageUtils.flipImageHorizontally(ImageUtils.resizeImage(ImageIO.read
+			//             (new File("assets/player_sprites/run"+i+".png")), 96, 96));
 			
-			// BufferedImage[] eastAtk = new BufferedImage[6];
+			BufferedImage[] eastAtk = new BufferedImage[9];
+			for (int i = 1; i <= 9; i++) {
+				String filePath = "src/main/resources/game/werebear/atk/" + i + ".png";
+				System.out.println("Loading image: " + filePath);
+				File file = new File(filePath);
+				if (file.exists()) {
+					eastAtk[i-1] = ImageUtils.resizeImage(ImageIO.read(file), 96, 96);
+					if (eastAtk[i-1] != null) {
+						System.out.println("Successfully loaded image: " + filePath);
+					} else {
+						System.err.println("Failed to load image: " + filePath);
+					}
+				} else {
+					System.err.println("File does not exist: " + filePath);
+				}
+			}
+	
+			// BufferedImage[] westAtk = new BufferedImage[9];
 			// for (int i = 1; i <= 6; i++)
-			// 	eastAtk[i-1] = ImageUtils.resizeImage(ImageIO.read(new File("assets/player_sprites/eastAtk"+i+".png")), 96, 96);
-
-			BufferedImage[] westAtk = new BufferedImage[6];
-			for (int i = 1; i <= 6; i++)
-				westAtk[i - 1] = ImageUtils.flipImageHorizontally(ImageUtils.resizeImage(ImageIO.read
-						(new File("assets/player_sprites/eastAtk"+i+".png")), 96, 96));
+			//     westAtk[i - 1] = ImageUtils.flipImageHorizontally(ImageUtils.resizeImage(ImageIO.read
+			//             (new File("assets/player_sprites/eastAtk"+i+".png")), 96, 96));
 			
-			// sprites.put(States.IDLE_RIGHT, idleRight); 
+			sprites.put(States.IDLE_RIGHT, idleRight); 
 			// sprites.put(States.IDLE_LEFT, idleLeft);
 			// sprites.put(States.RUN_RIGHT, runRight);
 			// sprites.put(States.RUN_LEFT, runLeft);
-			//sprites.put(States.ATK_EAST, eastAtk);
-			sprites.put(States.ATK_WEST, westAtk);		
+			sprites.put(States.ATK_EAST, eastAtk);
+			// sprites.put(States.ATK_WEST, westAtk);        
 			
+			// Debugging: Print the keys in the sprites map
+			System.out.println("Sprites map keys: " + sprites.keySet());
 			
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace(); 
 		}
-		
 	}
 	
 	public boolean attackCheck(Boss boss) {
@@ -184,7 +209,7 @@ public class Player  {
 		int range = this.getAttackRange();
 
 		// Adjust the attackArea based on the player's state
-		switch (this.getState()) {
+		switch (this.getPlayerState()) {
 			case ATK_WEST:
 				x -= range;
 				break;
@@ -203,7 +228,7 @@ public class Player  {
         boss.setFlashingRed(true);
         boss.setRedFlashFramesRemaining(12);
 		if (boss.getHealth() <= 0) 
-			state = WIN;
+			Game.state = GameStates.WIN;
         return true;
     }
     return false;
@@ -235,7 +260,7 @@ public class Player  {
 		/* for each state, we check if the animation count is equal to the animation speed, so the animationCount
 	 	 * is how many actual frames run, and then every animationSpeed frames, we increment the frame count for that state
 		 */
-		switch (state) {
+		switch (playerState) {
 		case IDLE_RIGHT:  
 			if (idleRightFrameCount == animationSpeed) {
 				idleRightFrameCount++;
@@ -284,22 +309,22 @@ public class Player  {
 				runLeftFrameCount = 1;
 			return getRunLeftSprite(runLeftFrameCount - 1);
 			
-		case ATK_NORTH:
-			if (northAnimationCount == animationSpeed) {
-			    northAtkFrameCount++;
-				northAnimationCount = 1;
-			}
+		// case ATK_NORTH:
+		// 	if (northAnimationCount == animationSpeed) {
+		// 	    northAtkFrameCount++;
+		// 		northAnimationCount = 1;
+		// 	}
 			
-			northAnimationCount++;
+		// 	northAnimationCount++;
 			
-			if (northAtkFrameCount == 7) {
-				northAtkFrameCount = 1;
-				this.setState(States.IDLE_RIGHT);
-				finishAttack();
-				return getIdleRightSprite(1);
+		// 	if (northAtkFrameCount == 7) {
+		// 		northAtkFrameCount = 1;
+		// 		this.setState(States.IDLE_RIGHT);
+		// 		finishAttack();
+		// 		return getIdleRightSprite(1);
 
-			}
-			return getNorthAtkSprite(northAtkFrameCount - 1);
+		// 	}
+		// 	return getNorthAtkSprite(northAtkFrameCount - 1);
 			
 		case ATK_EAST:
 			if (eastAnimationCount == animationSpeed) {
@@ -311,28 +336,28 @@ public class Player  {
 			
 			if (eastAtkFrameCount == 7) {
 				eastAtkFrameCount = 1;
-				this.setState(States.IDLE_RIGHT);
+				this.setPlayerState(States.IDLE_RIGHT);
 				finishAttack();
 				return getIdleRightSprite(1);
 			}
 			return getEastAtkSprite(eastAtkFrameCount - 1);
 			
-		case ATK_SOUTH:
-			if (southAnimationCount == animationSpeed) {
-				southAtkFrameCount++;
-				southAnimationCount = 1;
-			}
+		// case ATK_SOUTH:
+		// 	if (southAnimationCount == animationSpeed) {
+		// 		southAtkFrameCount++;
+		// 		southAnimationCount = 1;
+		// 	}
 			
-			southAnimationCount++;
+		// 	southAnimationCount++;
 
-			if (southAtkFrameCount == 7) {
-				this.setState(States.IDLE_RIGHT);
-				southAtkFrameCount = 1;
-				finishAttack();
-				return getIdleRightSprite(1);
+		// 	if (southAtkFrameCount == 7) {
+		// 		this.setState(States.IDLE_RIGHT);
+		// 		southAtkFrameCount = 1;
+		// 		finishAttack();
+		// 		return getIdleRightSprite(1);
 
-			}
-			return getSouthAtkSprite(southAtkFrameCount - 1);
+		// 	}
+		// 	return getSouthAtkSprite(southAtkFrameCount - 1);
 			
 		case ATK_WEST:
 			if (westAnimationCount == animationSpeed) {
@@ -343,7 +368,7 @@ public class Player  {
 			westAnimationCount++;
 			
 			if (westAtkFrameCount == 7) {
-				this.setState(States.IDLE_LEFT);
+				this.setPlayerState(States.IDLE_LEFT);
 				westAtkFrameCount = 1;
 				finishAttack();
 				return getIdleLeftSprite(1);
@@ -428,12 +453,12 @@ public class Player  {
 		this.moveCooldownMs = moveDelayMs;
 	}
 	
-	public States getState() {
-		return state;
+	public States getPlayerState() {
+		return playerState;
 	}
 
-	public void setState(States state) {
-		this.state = state;
+	public void setPlayerState(States state) {
+		this.playerState = state;
 	}
 
 	public BufferedImage getIdleRightSprite(int frameCt) {
@@ -508,13 +533,13 @@ public class Player  {
 		return runRightAnimationCount;
 	}
 
-	public int getNorthAtkFrameCount() {
-		return northAtkFrameCount;
-	}
+	// public int getNorthAtkFrameCount() {
+	// 	return northAtkFrameCount;
+	// }
 
-	public int getNorthAnimationCount() {
-		return northAnimationCount;
-	}
+	// public int getNorthAnimationCount() {
+	// 	return northAnimationCount;
+	// }
 
 	public int getEastAtkFrameCount() {
 		return eastAtkFrameCount;
@@ -524,13 +549,13 @@ public class Player  {
 		return eastAnimationCount;
 	}
 
-	public int getSouthAtkFrameCount() {
-		return southAtkFrameCount;
-	}
+	// public int getSouthAtkFrameCount() {
+	// 	return southAtkFrameCount;
+	// }
 
-	public int getSouthAnimationCount() {
-		return southAnimationCount;
-	}
+	// public int getSouthAnimationCount() {
+	// 	return southAnimationCount;
+	// }
 
 	public int getWestAtkFrameCount() {
 		return westAtkFrameCount;
@@ -569,7 +594,7 @@ public class Player  {
 	}
 	
 	public Vector getPosition() {	
-		return new Vector2D(x, y);
+		return new Vector(x, y);
 	}
 
 	public void setHitbox(Rectangle rectangle) {
