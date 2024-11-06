@@ -139,7 +139,7 @@ public class Player  {
 				System.out.println("Loading image: " + filePath);
 				File file = new File(filePath);
 				if (file.exists()) {
-					idleRight[i-1] = ImageIO.read(file);
+					idleRight[i-1] = ImageUtils.resizeImage(ImageIO.read(file), 500, 500);
 					if (idleRight[i-1] != null) {
 						System.out.println("Successfully loaded image: " + filePath);
 					} else {
@@ -148,7 +148,7 @@ public class Player  {
 				} else {
 					System.err.println("File does not exist: " + filePath);
 				}
-				//idleRight[i-1] = ImageUtils.resizeImage(ImageIO.read(new File(filePath)), 96, 96);
+
 			}
 			
 			// BufferedImage[] idleLeft = new BufferedImage[7];
