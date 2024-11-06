@@ -6,6 +6,9 @@ import java.awt.image.BufferedImage;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Random;
 
 
 public class Game  extends JPanel implements Runnable, KeyListener, MouseListener, MouseMotionListener{
@@ -13,13 +16,17 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 	private BufferedImage back; 
 	private int key, x, y;
 	public static GameStates state = GameStates.START;
-	private long deltaTime;
+	private double deltaTime;
 	private String selectedCharacter;
 	private ImageIcon menuBackground;
 	private Player player;
 	private boolean isAttacking;
 	private HashSet<Integer> pressedKeys;
+	private long lastTime;
+	private Queue<Boss> enemies;
 
+	private static final double NANO_TO_MILLI = 1000000.0;
+	private static final double TARGET_FRAME_TIME = 1000.0/60.0;
 
 
 	
@@ -33,10 +40,12 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 		player = new Player(400, 400);
 		pressedKeys = new HashSet<Integer>();
 		isAttacking = false;
+		lastTime = System.nanoTime();
 		key =-1; 
 		x=0;
 		y=0;
-	
+		enemies = new LinkedList<>();
+		fillEnemies();
 	}
 
 	
@@ -45,18 +54,23 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 	   {
 	   	try
 	   	{
-			long lastTime = System.nanoTime();
-			while (true) {
-				long currentTime = System.nanoTime();
-				deltaTime = currentTime - lastTime;
-				lastTime = currentTime;
+	   		while(true)
+	   		{ // designed to maintain a standard 60 fps for rendering
+	   		    long now = System.nanoTime();
+	   		    deltaTime = (now - lastTime) / NANO_TO_MILLI;  
+	   		    lastTime = now;
 
-				repaint();
-			}
-        }
+	   		    repaint(); 
+	   		    // calculate how much time to sleep to maintain 60 FPS
+	   		    double timeTaken = (System.nanoTime() - now) / NANO_TO_MILLI;
+	   		    double timeToSleep = TARGET_FRAME_TIME - timeTaken;  // time remaining to reach 16.67 milliseconds (1000 ms / 60 fps)
+
+	   		    if (timeToSleep > 0) 
+	   		            Thread.sleep((long)timeToSleep);  // sleep to maintain the frame rate
+	         }
+	      }
 	   		catch(Exception e)
 	      {
-			  e.printStackTrace();
 	      }
 	  	}
 	
@@ -193,8 +207,14 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 				break;
 			case GameStates.PLAY:
 				player.update(deltaTime);
+				Boss boss = enemies.peek();
+				
 				g2d.drawImage(player.getCurrentSprite(), player.getX(), player.getY(), null);
-
+				player.setHitbox(new Rectangle(player.getX()+210, player.getY()+200, 100, 100));
+				//g2d.drawRect((int)player.getHitbox().getX(), (int)player.getHitbox().getY(), player.getHitbox().width, player.getHitbox().height);
+				g2d.drawImage(boss.getCurrentSprite(), boss.getX(), boss.getY(), null); 
+				boss.setHitbox(new Rectangle(boss.getX()+215, boss.getY()+200, 100, 100));
+				//g2d.drawRect((int)boss.getHitbox().getX(), (int)boss.getHitbox().getY(), boss.getHitbox().width, boss.getHitbox().height);
 				break;
 			case GameStates.PAUSE:
 				break;
@@ -203,6 +223,19 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 			default:
 		}
 	}
+
+    private void fillEnemies() {
+        Random rand = new Random();
+        int screenWidth = 1920;
+        int screenHeight = 1080;
+        int borderOffset = 100;
+
+        for (int i = 0; i < 9; i++) {
+            int x = rand.nextInt(screenWidth - 2 * borderOffset) + borderOffset;
+            int y = rand.nextInt(screenHeight - 2 * borderOffset) + borderOffset;
+            enemies.add(new Boss(x, y));
+        }
+    }
 
 	public String selectCharacter(MouseEvent e) {
 		int x = e.getX();
@@ -247,7 +280,7 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 		key= e.getKeyCode();
 
 	    pressedKeys.add(e.getKeyCode());
-
+		updatePlayerState();
 		if (key == KeyEvent.VK_ESCAPE && state == GameStates.SELECTED) {
 			state = GameStates.START;
 		}
@@ -266,7 +299,7 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 	@Override
 	public void keyReleased(KeyEvent e) {
 		pressedKeys.remove(e.getKeyCode());
-		
+		updatePlayerState();
 		
 		
 	}
@@ -321,10 +354,13 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 		
 		if (pressedKeys.contains(KeyEvent.VK_S))
 			player.setDy(player.getSpeed());
+  
+		if (hasHorizontalInput || hasVerticalInput)
+			player.setPlayerState(Player.States.RUN_RIGHT);
+		else	
+			player.setPlayerState(Player.States.IDLE_RIGHT);
+			
 
-	    // if (pressedKeys.contains(KeyEvent.VK_A)) {
-	    //     player.setState(Player.States.RUN_LEFT);
-	    //     player.setDx(-player.getSpeed());
 	    //     player.setLastDirectionMoved(Player.Directions.WEST);
 	        
 	    // } else if (pressedKeys.contains(KeyEvent.VK_D)) {

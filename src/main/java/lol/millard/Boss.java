@@ -23,77 +23,80 @@ public class Boss { // screw inheritance
     
     private int idleRightFrameCount = 1;
     private int idleRightAnimationCount = 0;
-    // private int idleLeftFrameCount = 1;
-    // private int idleLeftAnimationCount = 0;
-    // private int runRightFrameCount = 1;
-    // private int runRightAnimationCount = 0;
-    // private int runLeftFrameCount = 1;
-    // private int runLeftAnimationCount = 0;
-    // private int throwingRightFrameCount = 1;
-    // private int throwingRightAnimationCount = 0;
-    // private int throwingLeftFrameCount = 1;
-    // private int throwingLeftAnimationCount = 0;
+    private int idleLeftFrameCount = 1;
+    private int idleLeftAnimationCount = 0;
+    private int runRightFrameCount = 1;
+    private int runRightAnimationCount = 0;
+    private int runLeftFrameCount = 1;
+    private int runLeftAnimationCount = 0;
+    private int throwingRightFrameCount = 1;
+    private int throwingRightAnimationCount = 0;
+    private int throwingLeftFrameCount = 1;
+    private int throwingLeftAnimationCount = 0;
 
 
 	private int animationSpeed = 5; // 5 frames per animation frame
     private AnimationStates animState = AnimationStates.IDLE_RIGHT; // default state
 
 	// below for boss ai handling
-    private AIStates aiState = AIStates.IDLING; // default ai state
-    private double distanceToPlayer;
+    // private AIStates aiState = AIStates.IDLING; // default ai state
 
-    private AttackStates attackState = AttackStates.IDLE;
+    // note: for simplicity's sake, all below AI logic removed
+	
+    // private double distanceToPlayer;
+
+    // private AttackStates attackState = AttackStates.IDLE;
     
     private long lastAttackTime = 0; 
     private long attackDuration = 0;
-    private static final long ATTACK_COOLDOWN = 3000; //cd in milliseconds (3 seconds)
+    private static final long ATTACK_COOLDOWN = 2000; //cd in milliseconds 
     
     private boolean isFlashingRed = false;
     private int redFlashFramesRemaining = 0;
     
     private Rectangle hitbox;
     
-    private attackInitListener attackInitListener;
+    // private attackInitListener attackInitListener;
     
-	private List<Point> patrolPath = new ArrayList<>(); // the patrol path
-	private int currentWaypoint = 0; // the current waypoint the boss is moving towards
-	private static final double SPEED = 1.5;
-	private static final double THRESHOLD = 1.0;
-	private long waypointReachedTime;
+	// private List<Point> patrolPath = new ArrayList<>(); // the patrol path
+	// private int currentWaypoint = 0; // the current waypoint the boss is moving towards
+	// private static final double SPEED = 1.5;
+	// private static final double THRESHOLD = 1.0;
+	// private long waypointReachedTime;
     
-    public interface attackInitListener {
-    	void attack();
-    }
+    // public interface attackInitListener {
+    // 	void attack();
+    // }
     
-    public void setAttackInitListener(attackInitListener listener) {
-    	this.attackInitListener = listener;
-    }
+    // public void setAttackInitListener(attackInitListener listener) {
+    // 	this.attackInitListener = listener;
+    // }
     
-	public void startAttack() {
-	    if (attackInitListener != null) {
-	        attackInitListener.attack();
-	    }
-	}
+	// public void startAttack() {
+	//     if (attackInitListener != null) {
+	//         attackInitListener.attack();
+	//     }
+	// }
     
 	public enum AnimationStates {
 		IDLE_RIGHT, IDLE_LEFT, THROWING_RIGHT, THROWING_LEFT, RUN_RIGHT, RUN_LEFT
 	}
     
-	public enum AIStates {
-		IDLING, CHASING, THROWING, RETREATING
-	}
+	// public enum AIStates {
+	// 	IDLING, CHASING, THROWING, RETREATING
+	// }
 	
-	public enum AttackStates {
-		IDLE,
-		TAP, // like the boss is 'tapping' the attack key 5 times
-		BURST, // three, three round bursts of dynamite
-		ARMAGEDDON, // spams as much dynamite as possible for 5 seconds
-		BLOOM //  sends 360 things of dynamite for every degree outward from the boss
-	}
+	// public enum AttackStates {
+	// 	IDLE,
+	// 	TAP, // like the boss is 'tapping' the attack key 5 times
+	// 	BURST, // three, three round bursts of dynamite
+	// 	ARMAGEDDON, // spams as much dynamite as possible for 5 seconds
+	// 	BLOOM //  sends 360 things of dynamite for every degree outward from the boss
+	// }
 	
-	public Boss() {
-		x = 610;
-		y = 250;
+	public Boss(int x, int y) {
+		this.x = x;
+		this.y = y;
 		dx = 0; 
 		dy = 0;
 		width = 96;
@@ -102,13 +105,13 @@ public class Boss { // screw inheritance
 		setSprites(sprites);
 		setHitbox(new Rectangle((int)x, (int)y, width, height));
 
-		createPatrolPath();
+		// createPatrolPath();
 	}
 
-	public void createPatrolPath() {
-		patrolPath.add(new Point(0, 0));
+	// public void createPatrolPath() {
+	// 	patrolPath.add(new Point(0, 0));
 
-	}
+	// }
 
 	public boolean canAttack() {
 	        long currentTime = System.currentTimeMillis();
@@ -122,10 +125,10 @@ public class Boss { // screw inheritance
 	
 	public void setSprites(Map<AnimationStates, BufferedImage[]> sprites) {
 		try {
-			BufferedImage[] idleRight = new BufferedImage[7];
-			for (int i = 1; i <= 7; i++) {
+			BufferedImage[] idleRight = new BufferedImage[6];
+			for (int i = 1; i <= 6; i++) {
 				idleRight[i-1] = ImageUtils
-						.resizeImage(ImageIO.read(new File("assets/boss_sprites/idle"+i+".png")), 96, 96);
+						.resizeImage(ImageIO.read(new File("src/main/resources/game/skeleton_archer/idle/"+i+".png")), 500, 500);
 			}
 			sprites.put(AnimationStates.IDLE_RIGHT, idleRight);
 			
@@ -172,12 +175,20 @@ public class Boss { // screw inheritance
 		if (isFlashingRed && redFlashFramesRemaining == 0) 
             isFlashingRed = false;
 	    switch (animState) {
-	    case IDLE_RIGHT:  
-	        if (++idleRightAnimationCount == animationSpeed) {
-	            idleRightAnimationCount = 0;
-	            idleRightFrameCount = (idleRightFrameCount % 7) + 1;
-	        }
-	        return getIdleRightSprite(idleRightFrameCount - 1);
+	    case IDLE_RIGHT:   
+	
+		idleRightAnimationCount++;
+
+		if (idleRightAnimationCount >= animationSpeed) {
+			idleRightFrameCount++;
+			idleRightAnimationCount = 0; 
+		}
+
+		if (idleRightFrameCount >= 6) { // assuming 6 frames
+			idleRightFrameCount = 0;
+		}
+
+		return getIdleRightSprite(idleRightFrameCount);
 
 	    // case IDLE_LEFT: 
 	    //     if (++idleLeftAnimationCount == animationSpeed) {
@@ -231,40 +242,40 @@ public class Boss { // screw inheritance
 	    }
 	}
 	
-	public void patrol() {
-		Point target = patrolPath.get(currentWaypoint);
+	// public void patrol() {
+	// 	Point target = patrolPath.get(currentWaypoint);
 
-		if (this.x == target.x && this.y == target.y && System.currentTimeMillis() - waypointReachedTime >= 1000) {
-			currentWaypoint = (currentWaypoint + 1) % patrolPath.size();
-			waypointReachedTime = System.currentTimeMillis(); 
-		} else if (this.x != target.x || this.y != target.y) { 
-			moveTowards(target.x, target.y);
-		}
-	}
+	// 	if (this.x == target.x && this.y == target.y && System.currentTimeMillis() - waypointReachedTime >= 1000) {
+	// 		currentWaypoint = (currentWaypoint + 1) % patrolPath.size();
+	// 		waypointReachedTime = System.currentTimeMillis(); 
+	// 	} else if (this.x != target.x || this.y != target.y) { 
+	// 		moveTowards(target.x, target.y);
+	// 	}
+	// }
 	
 
-	public void moveTowards(int targetX, int targetY) {
-		double dx = targetX - this.x;
-		double dy = targetY - this.y;
+	// public void moveTowards(int targetX, int targetY) {
+	// 	double dx = targetX - this.x;
+	// 	double dy = targetY - this.y;
 	
-		double distance = Math.sqrt(dx * dx + dy * dy);
+	// 	double distance = Math.sqrt(dx * dx + dy * dy);
 
-		if (distance <= THRESHOLD) {
-			this.x = targetX;
-			this.y = targetY;
-		} else {
-			double directionX = dx / distance;
-			double directionY = dy / distance;
+	// 	if (distance <= THRESHOLD) {
+	// 		this.x = targetX;
+	// 		this.y = targetY;
+	// 	} else {
+	// 		double directionX = dx / distance;
+	// 		double directionY = dy / distance;
 		
 	
-		this.x += directionX * SPEED;
-		this.y += directionY * SPEED;
-		}
-		if (this.x == targetX && this.y == targetY) {
-			waypointReachedTime = System.currentTimeMillis();
-		}
+	// 	this.x += directionX * SPEED;
+	// 	this.y += directionY * SPEED;
+	// 	}
+	// 	if (this.x == targetX && this.y == targetY) {
+	// 		waypointReachedTime = System.currentTimeMillis();
+	// 	}
 
-	}
+	// }
 
 	public BufferedImage getIdleRightSprite(int frameCt) {
 		if (!isFlashingRed) 
@@ -336,21 +347,21 @@ public class Boss { // screw inheritance
 		this.animationSpeed = animationSpeed;
 	}
 
-	public AIStates getAiState() {
-		return aiState;
-	}
+	// public AIStates getAiState() {
+	// 	return aiState;
+	// }
 
-	public void setAiState(AIStates aiState) {
-		this.aiState = aiState;
-	}
+	// public void setAiState(AIStates aiState) {
+	// 	this.aiState = aiState;
+	// }
 
-	public double getDistanceToPlayer() {
-		return distanceToPlayer;
-	}
+	// public double getDistanceToPlayer() {
+	// 	return distanceToPlayer;
+	// }
 
-	public void setDistanceToPlayer(double distanceToPlayer) {
-		this.distanceToPlayer = distanceToPlayer;
-	}
+	// public void setDistanceToPlayer(double distanceToPlayer) {
+	// 	this.distanceToPlayer = distanceToPlayer;
+	// }
 
 	
 	public int getX() {
@@ -461,13 +472,13 @@ public class Boss { // screw inheritance
 	}
 
     
-    public AttackStates getAttackState() {
-		return attackState;
-	}
+    // public AttackStates getAttackState() {
+	// 	return attackState;
+	// }
 
-	public void setAttackState(AttackStates attackState) {
-		this.attackState = attackState;
-	}
+	// public void setAttackState(AttackStates attackState) {
+	// 	this.attackState = attackState;
+	// }
 
 	public boolean isCooldown() {
 		if (System.currentTimeMillis() - lastAttackTime < ATTACK_COOLDOWN)

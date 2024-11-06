@@ -78,7 +78,7 @@ public class Player  {
 		this.health = 100;
 		this.moveCooldownMs = 75;
 		this.setPlayerState(States.IDLE_RIGHT);
-		this.setSpeed(90);
+		this.setSpeed(200);
 		this.idleRightFrameCount = 1;
 		this.idleLeftFrameCount = 1;
 		this.runRightFrameCount = 1;
@@ -91,7 +91,7 @@ public class Player  {
 		this.runLeftAnimationCount = 1;
 		this.eastAnimationCount = 1;
 		this.westAnimationCount = 1;
-		this.animationSpeed = 5; // 5 real frames to 1 animation frame
+		this.animationSpeed = 7; // x real frames to 1 animation frame
 		this.hitbox = new Rectangle((int)x, (int)y, 30, 40);
 		this.setAttackRange(32);
 		this.invincibilityMs = 100;
@@ -157,10 +157,22 @@ public class Player  {
 			//             .resizeImage(ImageIO.read(new File("assets/player_sprites/idle" + i + ".png")), 96, 96));
 			// }
 			
-			// BufferedImage[] runRight = new BufferedImage[6];
-			// for (int i = 1; i <= 6; i++)
-			//     runRight[i-1] = ImageUtils.resizeImage(ImageIO.read(new File("assets/player_sprites/run"+i+".png")), 96, 96);
-			
+			BufferedImage[] runRight = new BufferedImage[8];
+			for (int i = 1; i <= 8; i++) {
+				String filePath = "src/main/resources/game/werebear/run/" + i + ".png";
+				System.out.println("Loading image: " + filePath);
+				File file = new File(filePath);
+				if (file.exists()) {
+					runRight[i-1] = ImageUtils.resizeImage(ImageIO.read(file), 500, 500);
+					if (runRight[i-1] != null) {
+						System.out.println("Successfully loaded image: " + filePath);
+					} else {
+						System.err.println("Failed to load image: " + filePath);
+					}
+				} else {
+					System.err.println("File does not exist: " + filePath);
+				}
+			}
 			// BufferedImage[] runLeft = new BufferedImage[6];
 			// for (int i = 1; i <= 6; i++)
 			//     runLeft[i - 1] = ImageUtils.flipImageHorizontally(ImageUtils.resizeImage(ImageIO.read
@@ -190,7 +202,7 @@ public class Player  {
 			
 			sprites.put(States.IDLE_RIGHT, idleRight); 
 			// sprites.put(States.IDLE_LEFT, idleLeft);
-			// sprites.put(States.RUN_RIGHT, runRight);
+			sprites.put(States.RUN_RIGHT, runRight);
 			// sprites.put(States.RUN_LEFT, runLeft);
 			sprites.put(States.ATK_EAST, eastAtk);
 			// sprites.put(States.ATK_WEST, westAtk);        
@@ -261,18 +273,20 @@ public class Player  {
 	 	 * is how many actual frames run, and then every animationSpeed frames, we increment the frame count for that state
 		 */
 		switch (playerState) {
-		case IDLE_RIGHT:  
-			if (idleRightFrameCount == animationSpeed) {
-				idleRightFrameCount++;
-				idleRightAnimationCount = 1;
-			}
-			
+			case IDLE_RIGHT:  
+	
 			idleRightAnimationCount++;
-				
-			if (idleRightFrameCount == 8)
-				idleRightFrameCount = 1;
-			return getIdleRightSprite(idleRightFrameCount - 1);
-			
+
+			if (idleRightAnimationCount >= animationSpeed) {
+				idleRightFrameCount++;
+				idleRightAnimationCount = 0; 
+			}
+	
+			if (idleRightFrameCount >= 6) { // assuming 6 frames
+				idleRightFrameCount = 0;
+			}
+	
+			return getIdleRightSprite(idleRightFrameCount);
 		case IDLE_LEFT: 
 			if (idleLeftAnimationCount == animationSpeed) {
 				idleLeftFrameCount++;
