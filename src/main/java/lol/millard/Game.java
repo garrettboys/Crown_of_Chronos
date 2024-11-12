@@ -215,6 +215,8 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 				g2d.drawImage(boss.getCurrentSprite(), boss.getX(), boss.getY(), null); 
 				boss.setHitbox(new Rectangle(boss.getX()+215, boss.getY()+200, 100, 100));
 				//g2d.drawRect((int)boss.getHitbox().getX(), (int)boss.getHitbox().getY(), boss.getHitbox().width, boss.getHitbox().height);
+
+
 				break;
 			case GameStates.PAUSE:
 				break;
@@ -403,6 +405,12 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 	    return !player.getPlayerState().name().startsWith("ATK");
 	}
 
+	public void projectileRender(Graphics g) {
+		for (Projectile projectile : projectiles) {
+			projectile.update();
+			g.drawImage(projectile.getCurrentSprite(), (int)projectile.getPosition().getX(), (int)projectile.getPosition().getY(), null);
+		}
+	}
 
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
