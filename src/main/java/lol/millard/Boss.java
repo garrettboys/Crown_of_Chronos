@@ -56,7 +56,7 @@ public class Boss { // screw inheritance
     
     private Rectangle hitbox;
     
-    // private attackInitListener attackInitListener;
+    private attackInitListener attackInitListener;
     
 	// private List<Point> patrolPath = new ArrayList<>(); // the patrol path
 	// private int currentWaypoint = 0; // the current waypoint the boss is moving towards
@@ -64,35 +64,28 @@ public class Boss { // screw inheritance
 	// private static final double THRESHOLD = 1.0;
 	// private long waypointReachedTime;
     
-    // public interface attackInitListener {
-    // 	void attack();
-    // }
+    public interface attackInitListener {
+    	void attack();
+    }
     
-    // public void setAttackInitListener(attackInitListener listener) {
-    // 	this.attackInitListener = listener;
-    // }
+    public void setAttackInitListener(attackInitListener listener) {
+    	this.attackInitListener = listener;
+    }
     
-	// public void startAttack() {
-	//     if (attackInitListener != null) {
-	//         attackInitListener.attack();
-	//     }
-	// }
+	public void startAttack() {
+	    if (attackInitListener != null) {
+	        attackInitListener.attack();
+	    }
+	}
     
 	public enum AnimationStates {
-		IDLE_RIGHT, IDLE_LEFT, THROWING_RIGHT, THROWING_LEFT, RUN_RIGHT, RUN_LEFT
+		IDLE_RIGHT, IDLE_LEFT, ATTACK_RIGHT, ATTACK_LEFT, DIE_LEFT, DIE_RIGHT
 	}
     
 	// public enum AIStates {
 	// 	IDLING, CHASING, THROWING, RETREATING
 	// }
-	
-	// public enum AttackStates {
-	// 	IDLE,
-	// 	TAP, // like the boss is 'tapping' the attack key 5 times
-	// 	BURST, // three, three round bursts of dynamite
-	// 	ARMAGEDDON, // spams as much dynamite as possible for 5 seconds
-	// 	BLOOM //  sends 360 things of dynamite for every degree outward from the boss
-	// }
+
 	
 	public Boss(int x, int y) {
 		this.x = x;
@@ -298,43 +291,43 @@ public class Boss { // screw inheritance
 		}
 	}
 
-	public BufferedImage getRunRightSprite(int frameCt) {
+	// public BufferedImage getRunRightSprite(int frameCt) {
+	// 	if (!isFlashingRed)
+	//     return sprites.get(AnimationStates.RUN_RIGHT)[frameCt];
+		
+	// 	else {
+	// 		redFlashFramesRemaining--;
+	// 		return ImageUtils.tintRed(sprites.get(AnimationStates.RUN_RIGHT)[frameCt]);
+	// 	}
+	// }
+
+	// public BufferedImage getRunLeftSprite(int frameCt) {
+	// 	if (!isFlashingRed)
+	//     return sprites.get(AnimationStates.RUN_LEFT)[frameCt];
+		
+	// 	else {
+	// 		redFlashFramesRemaining--;
+	// 		return ImageUtils.tintRed(sprites.get(AnimationStates.RUN_LEFT)[frameCt]);
+	// 	}
+	// }
+
+	public BufferedImage getAttackRightSprite(int frameCt) {
 		if (!isFlashingRed)
-	    return sprites.get(AnimationStates.RUN_RIGHT)[frameCt];
+	    return sprites.get(AnimationStates.ATTACK_RIGHT)[frameCt];
 		
 		else {
 			redFlashFramesRemaining--;
-			return ImageUtils.tintRed(sprites.get(AnimationStates.RUN_RIGHT)[frameCt]);
+			return ImageUtils.tintRed(sprites.get(AnimationStates.ATTACK_RIGHT)[frameCt]);
 		}
 	}
 
-	public BufferedImage getRunLeftSprite(int frameCt) {
+	public BufferedImage getAttackLeftSprite(int frameCt) {
 		if (!isFlashingRed)
-	    return sprites.get(AnimationStates.RUN_LEFT)[frameCt];
+	    return sprites.get(AnimationStates.ATTACK_LEFT)[frameCt];
 		
 		else {
 			redFlashFramesRemaining--;
-			return ImageUtils.tintRed(sprites.get(AnimationStates.RUN_LEFT)[frameCt]);
-		}
-	}
-
-	public BufferedImage getThrowingRightSprite(int frameCt) {
-		if (!isFlashingRed)
-	    return sprites.get(AnimationStates.THROWING_RIGHT)[frameCt];
-		
-		else {
-			redFlashFramesRemaining--;
-			return ImageUtils.tintRed(sprites.get(AnimationStates.THROWING_RIGHT)[frameCt]);
-		}
-	}
-
-	public BufferedImage getThrowingLeftSprite(int frameCt) {
-		if (!isFlashingRed)
-	    return sprites.get(AnimationStates.THROWING_LEFT)[frameCt];
-		
-		else {
-			redFlashFramesRemaining--;
-			return ImageUtils.tintRed(sprites.get(AnimationStates.THROWING_LEFT)[frameCt]);
+			return ImageUtils.tintRed(sprites.get(AnimationStates.ATTACK_LEFT)[frameCt]);
 		}
 	}
 

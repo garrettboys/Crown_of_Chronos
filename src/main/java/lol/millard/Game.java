@@ -24,6 +24,7 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 	private HashSet<Integer> pressedKeys;
 	private long lastTime;
 	private Queue<Boss> enemies;
+	private ArrayList<Projectile> projectiles;
 
 	private static final double NANO_TO_MILLI = 1000000.0;
 	private static final double TARGET_FRAME_TIME = 1000.0/60.0;
@@ -46,6 +47,8 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 		y=0;
 		enemies = new LinkedList<>();
 		fillEnemies();
+		projectiles = new ArrayList<Projectile>();
+
 	}
 
 	
@@ -401,14 +404,32 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 	    
 	}
 
+
+	// //                if (boss.isAttacking()) {
+	// 	boss.updateAttackAnimation(deltaTime);
+	// 	if (boss.isAttackAnimationComplete()) {
+	// 		shootProjectile(boss);
+	// 		boss.resetAttackAnimation();
+	// 	}
+	// }
+
+	//    }
+
+    // private void shootProjectile(Boss boss) {
+    //     // Calculate the direction from the boss to the player
+    //     Vector direction = new Vector(player.getX() - boss.getX(), player.getY() - boss.getY());
+    //     direction.normalize();
+    //     float speed = 300; // Adjust the speed as needed
+    //     Projectile projectile = new Projectile(boss.getX(), boss.getY(), direction, speed);
+    //     projectiles.add(projectile);
+    // }
 	private boolean canAttack() {
 	    return !player.getPlayerState().name().startsWith("ATK");
 	}
 
 	public void projectileRender(Graphics g) {
 		for (Projectile projectile : projectiles) {
-			projectile.update();
-			g.drawImage(projectile.getCurrentSprite(), (int)projectile.getPosition().getX(), (int)projectile.getPosition().getY(), null);
+			projectile.draw((Graphics2D) g);
 		}
 	}
 
@@ -447,3 +468,4 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 
 	
 }
+ 
