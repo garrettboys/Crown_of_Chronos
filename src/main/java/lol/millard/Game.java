@@ -219,6 +219,24 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 				boss.setHitbox(new Rectangle(boss.getX()+215, boss.getY()+200, 100, 100));
 				//g2d.drawRect((int)boss.getHitbox().getX(), (int)boss.getHitbox().getY(), boss.getHitbox().width, boss.getHitbox().height);
 
+				if (boss.getState() == Boss.AnimationStates.IDLE_LEFT || boss.getState() == Boss.AnimationStates.IDLE_RIGHT) {
+					if (!boss.isAttacking()) {
+						long attackInterval = (long) (Math.random() * 4000) + 1000; // Random interval between 1-5 seconds
+						if (System.currentTimeMillis() - boss.getLastAttackTime() >= attackInterval) {
+							boss.setState(Boss.AnimationStates.ATTACK_RIGHT);
+							boss.setLastAttackTime(System.currentTimeMillis());
+						}
+						if (boss.isAttackPending()) {
+							Vector direction = new Vector(player.getX() - boss.getX(), player.getY() - boss.getY());
+							direction.normalize();
+							Projectile projectile = new Projectile(boss.getX(), boss.getY(), direction, 300);
+							projectiles.add(projectile);
+						}
+					}
+				}
+
+				projectileRender(g2d);
+                
 
 				break;
 			case GameStates.PAUSE:
@@ -228,6 +246,7 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 			default:
 		}
 	}
+
 
     private void fillEnemies() {
         Random rand = new Random();
@@ -404,25 +423,6 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 	    
 	}
 
-
-	// //                if (boss.isAttacking()) {
-	// 	boss.updateAttackAnimation(deltaTime);
-	// 	if (boss.isAttackAnimationComplete()) {
-	// 		shootProjectile(boss);
-	// 		boss.resetAttackAnimation();
-	// 	}
-	// }
-
-	//    }
-
-    // private void shootProjectile(Boss boss) {
-    //     // Calculate the direction from the boss to the player
-    //     Vector direction = new Vector(player.getX() - boss.getX(), player.getY() - boss.getY());
-    //     direction.normalize();
-    //     float speed = 300; // Adjust the speed as needed
-    //     Projectile projectile = new Projectile(boss.getX(), boss.getY(), direction, speed);
-    //     projectiles.add(projectile);
-    // }
 	private boolean canAttack() {
 	    return !player.getPlayerState().name().startsWith("ATK");
 	}
