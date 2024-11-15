@@ -227,15 +227,21 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 							boss.setLastAttackTime(System.currentTimeMillis());
 						}
 						if (boss.isAttackPending()) {
-							Vector direction = new Vector(player.getX() - boss.getX(), player.getY() - boss.getY());
+							int playerCenterX = player.getX() + 250;
+							int playerCenterY = player.getY() + 250;
+							Vector direction = new Vector(playerCenterX - (boss.getX()+250), playerCenterY - (boss.getY()+250));
 							direction.normalize();
-							Projectile projectile = new Projectile(boss.getX(), boss.getY(), direction, 300);
+							float speed = 20;
+							Projectile projectile = new Projectile(boss.getX() + 250, boss.getY() + 250, direction, speed);
 							projectiles.add(projectile);
 						}
 					}
+					g2d.drawOval(player.getX()+250, player.getY()+250, 10, 10);
+					//g2d.drawOval(boss.getX() + boss.getWidth() / 2 + 50d, boss.getY() + boss.getHeight() / 2 + 50, 10, 10);
 				}
 
 				projectileRender(g2d);
+				projectileMove();
                 
 
 				break;
@@ -248,16 +254,17 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 	}
 
 
-    private void fillEnemies() {
-        Random rand = new Random();
-        int screenWidth = 1920;
-        int screenHeight = 1080;
-        int borderOffset = 100;
+	public void projectileMove() {
+		for (Projectile projectile : projectiles) {
+			projectile.update();
+		}
+	}
 
+    private void fillEnemies() {
         for (int i = 0; i < 9; i++) {
-            int x = rand.nextInt(screenWidth - 2 * borderOffset) + borderOffset;
-            int y = rand.nextInt(screenHeight - 2 * borderOffset) + borderOffset;
-            enemies.add(new Boss(x, y));
+            int x = 100 + new Random().nextInt(1720);
+            int y = 100 + new Random().nextInt(880);
+            enemies.add(new Boss(x - 250, y - 250));
         }
     }
 

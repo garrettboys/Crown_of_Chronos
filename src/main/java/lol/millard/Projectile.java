@@ -42,7 +42,8 @@ public class Projectile { // for dynamite projectile physics, moves in 360 deg i
 	    direction.scale(speed); 
 	    velocity = direction; 
 	    hitbox = new Rectangle((int)position.getX()+100, (int)position.getY()+100, width, height);
-		sprite = ImageIO.read(new File("src/main/resources/skeleton_archer/arrow.png"));
+		sprite = ImageUtils.resizeImage(ImageIO.read(new File("src/main/resources/game/skeleton_archer/arrow.png")
+				), 100, 100);
 		}
 		catch (IOException e) {
 			e.printStackTrace();

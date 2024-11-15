@@ -23,6 +23,17 @@ public class Main extends JFrame{
 		getContentPane().add(play);
 		
 		setVisible(true);
+		addWindowListener(new WindowListener() {
+			public void windowActivated(WindowEvent e) {}
+			public void windowClosed(WindowEvent e) {}
+			public void windowClosing(WindowEvent e) {
+				//play.createFile();
+			}
+			public void windowDeactivated(WindowEvent e) {}
+			public void windowDeiconified(WindowEvent e) {}
+			public void windowIconified(WindowEvent e) {}
+			public void windowOpened(WindowEvent e) {}
+		});
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 	}

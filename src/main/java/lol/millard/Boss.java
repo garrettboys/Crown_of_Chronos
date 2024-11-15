@@ -15,6 +15,7 @@ public class Boss {
     private int health;
     private int dx, dy;
     private Boolean lastMoveRight = true;
+    private Boolean attackPending = false;
     private Map<AnimationStates, BufferedImage[]> sprites = new HashMap<>();
     
     private int idleRightFrameCount = 1;
@@ -149,6 +150,8 @@ public class Boss {
 				}
 				if (attackRightFrameCount == 9) {
 					animState = AnimationStates.IDLE_RIGHT;
+                    attackPending = true;
+                    attackRightFrameCount = 0;
 				}
 				return getAttackRightSprite(attackRightFrameCount);
 			case ATTACK_LEFT:
@@ -159,6 +162,9 @@ public class Boss {
 				}
 				if (attackLeftFrameCount == 9) { 
 					animState = AnimationStates.IDLE_LEFT;
+                    attackPending = true;
+                    attackLeftFrameCount = 0;
+                    
 				}
 				return getAttackLeftSprite(attackLeftFrameCount);
 
@@ -205,17 +211,17 @@ public class Boss {
 
     
 
-    public boolean isAttackAnimationComplete() {
-        return attackRightFrameCount == 9;
-    }
-
 
     public boolean isAttacking() {
         return animState == AnimationStates.ATTACK_RIGHT || animState == AnimationStates.ATTACK_LEFT;
     }
 
 	public boolean isAttackPending() {
-		return attackLeftFrameCount == 9 || attackRightFrameCount == 9;
+        if (attackPending) {
+            attackPending = false;
+            return true;
+        }
+        return false;
 	}
 
     public int getX() {
